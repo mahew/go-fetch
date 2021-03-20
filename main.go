@@ -22,6 +22,12 @@ type post struct {
 	CreatedAt   time.Time `json:"updated_at"`
 }
 
+type comment struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Comment string `json:"comment"`
+}
+
 type allPosts []post
 
 var posts = allPosts{
@@ -84,6 +90,7 @@ func updatePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
 	}
+
 	json.Unmarshal(reqBody, &updatedPost)
 
 	for i, post := range posts {
@@ -95,6 +102,7 @@ func updatePost(w http.ResponseWriter, r *http.Request) {
 			post.UpdatedAt = now
 			posts = append(posts[:i], post)
 			json.NewEncoder(w).Encode(post)
+			break
 		}
 	}
 }
@@ -108,6 +116,7 @@ func deletePost(w http.ResponseWriter, r *http.Request) {
 		if post.ID == postID {
 			posts = append(posts[:i], posts[i+1:]...)
 			fmt.Fprintf(w, "Post ID %v deleted.", postID)
+			break
 		}
 	}
 }
